@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
         ('Male','Male'),
         ('Female', 'Female')
     )
-    username = models.CharField(null=True, blank=True, max_length=50)
+    username = models.CharField(null=True, blank=True, max_length=50, unique=True)
     email = models.EmailField(unique=True)
     gender = models.CharField(max_length=6, choices=Gender)
     position = models.CharField(max_length=40, null=True, blank=True)
