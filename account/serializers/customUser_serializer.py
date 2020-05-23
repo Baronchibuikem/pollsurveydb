@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, status
 from account.models import CustomUser
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
@@ -27,23 +27,23 @@ class RegistrationSerializer(serializers.Serializer):
     last_name = serializers.CharField()
     email = serializers.EmailField()
     username = serializers.CharField()
-    gender = serializers.ChoiceField(choices=Gender)
-    position = serializers.CharField()
-    bio = serializers.CharField()
+    gender = serializers.ChoiceField(choices=Gender, required=False)
+    position = serializers.CharField(required=False)
+    bio = serializers.CharField(required=False)
 
     def create(self, payload):
         return CustomUser(**payload)
 
     def validate_email(self, payload):
         if CustomUser.objects.filter(email__iexact=payload).exists():
-            raise serializers.ValidationError(
-                'A user with that email already exists.')
+            raise serializers.ValidationError({
+                "error": 'A user with that email already exists'})
         return payload
 
     def validate_username(self, payload):
         if CustomUser.objects.filter(username__iexact=payload).exists():
-            raise serializers.ValidationError(
-                'A user with that username already exists')
+            raise serializers.ValidationError({
+                "error": 'A user with that username already exists'})
         return payload
 
 
@@ -59,7 +59,10 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(**data)
         if user and user.is_active:
             return user
-        raise serializers.ValidationError("Incorrect Credentials")
+        raise serializers.ValidationError({
+            "error": "Incorrect Credentials",
+            "status": status.HTTP_400_BAD_REQUEST
+        })
 
 
 class ChangePasswordSerializer(serializers.ModelSerializer):
