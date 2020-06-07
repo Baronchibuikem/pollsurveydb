@@ -26,13 +26,20 @@ class RegistrationSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     email = serializers.EmailField()
+    password = serializers.CharField()
     username = serializers.CharField()
     gender = serializers.ChoiceField(choices=Gender, required=False)
     position = serializers.CharField(required=False)
     bio = serializers.CharField(required=False)
 
-    def create(self, payload):
-        return CustomUser(**payload)
+    # used for registering a user into the database
+    def create(self, validated_data):
+        user = CustomUser(first_name=validated_data["first_name"],
+                          last_name=validated_data['last_name'],
+                          email=validated_data["email"])
+        user.set_password(validated_data["password"])
+        user.save()
+        return user
 
     def validate_email(self, payload):
         if CustomUser.objects.filter(email__iexact=payload).exists():
@@ -60,7 +67,7 @@ class LoginSerializer(serializers.Serializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError({
-            "error": "Incorrect Credentials",
+            "data": "Incorrect Credentials",
             "status": status.HTTP_400_BAD_REQUEST
         })
 

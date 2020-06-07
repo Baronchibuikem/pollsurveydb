@@ -42,9 +42,11 @@ INSTALLED_APPS = [
     'django_extensions',
     "knox",
     'drf_yasg',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # added middleware for cors-header
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -134,3 +136,17 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 
 }
+
+# Whitelisting localhost:3000  because our frontend will be served there
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000',
+    'http://localhost:3001'
+]
+
+# user for django-rest-auth-registration
+SITE_ID = 1
+
+# ACCOUNT_UNIQUE_EMAIL = True
+# CSRF_COOKIE_NAME = "csrftoken"
+# ACCOUNT_AUTHENTICATION_METHOD = 'username'
+# ACCOUNT_EMAIL_VERIFICATION = 'none'

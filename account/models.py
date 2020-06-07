@@ -18,6 +18,7 @@ class CustomUser(AbstractUser):
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, blank=True, null=True)
     bio = models.CharField(max_length=250, null=True, blank=True)
+    image = models.ImageField("media/user_image", null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['first_name', 'last_name',
