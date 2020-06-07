@@ -72,17 +72,17 @@ class LoginSerializer(serializers.Serializer):
         })
 
 
-class ChangePasswordSerializer(serializers.ModelSerializer):
-    """
-    Serializer for password change endpoint.
-    """
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
+# class ChangePasswordSerializer(serializers.ModelSerializer):
+#     """
+#     Serializer for password change endpoint.
+#     """
+#     old_password = serializers.CharField(required=True)
+#     new_password = serializers.CharField(required=True)
 
-    def validate_new_password(self, value):
-        validate_password(value)
-        return value
+#     def validate_new_password(self, value):
+#         validate_password(value)
+#         return value
 
-    class Meta:
-        model = CustomUser
-        fields = ('old_password', 'new_password')
+#     class Meta:
+#         model = CustomUser
+#         fields = ('old_password', 'new_password')
