@@ -4,6 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from account.models import CustomUser
 from knox.models import AuthToken
+from rest_framework.permissions import AllowAny
+from account.permissions import IsOwnerOrReadonly
 from account.serializers.customUser_serializer import RegistrationSerializer, LoginSerializer, GetUserSerializer
 
 
@@ -40,3 +42,24 @@ class RegisterViewSet(generics.GenericAPIView):
                 "status": status.HTTP_201_CREATED,
                 "message": "Account created successfully"
             })
+
+
+class UserListAPIView(generics.ListAPIView):
+    """
+    This endpoint is used for listing all registered users in the platform,
+    but only an admin user can access the data in this endpoint
+    """
+
+    queryset = CustomUser.objects.all()
+    serializer_class = GetUserSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+
+class UserDetailAPIView(generics.RetrieveUpdateAPIView):
+    """
+    For retrieving a single user from the database.
+    """
+
+    queryset = CustomUser.objects.all()
+    serializer_class = GetUserSerializer
+    permission_classes = (IsOwnerOrReadonly, )

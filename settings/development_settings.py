@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "knox",
     'drf_yasg',
     'corsheaders',
+    "rest_framework"
 ]
 
 MIDDLEWARE = [
