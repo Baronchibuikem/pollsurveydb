@@ -1,29 +1,43 @@
 from rest_framework import serializers, status
-from polls.models import Poll
+from polls.models import Poll, Choice
 from rest_framework.validators import ValidationError
 from django.utils import timezone
+from polls.serializers.choices_serializer import ChoiceSerializer
 
 
-class Poll_Serializer(serializers.ModelSerializer):
+class PollSerializer(serializers.ModelSerializer):
+    choices = ChoiceSerializer(many=True, required=False)
+    poll_creator = serializers.SerializerMethodField()
+    poll_has_expired = serializers.SerializerMethodField()
+    poll_creator_image = serializers.SerializerMethodField()
+    poll_creator_fullname = serializers.SerializerMethodField()
 
-    class meta:
-        models = Poll
-        fields = ("poll_question", "id", "poll_creator",
-                  "poll_expiration", "poll_has_expired")
-        read_only_fields = ["expired"]
+    # poll_creator_id = serializers.SerializerMethodField()
 
-    def get_poller_creator(self, instance):
+    class Meta:
+        model = Poll
+        fields = ("poll_question", "id", "poll_creator", 'poll_creator_image',
+                  "poll_expiration_date", "poll_has_expired",
+                  "poll_creator_fullname", "choices")
+        read_only_fields = ["expired", 'poll_has_expired']
+
+    # Read up serializerMethod on the official doc to get what the methods below are doing
+    def get_poll_creator(self, instance):
         return instance.poll_creator.username
 
+    def get_poll_creator_fullname(self, instance):
+        fullname = f'{instance.poll_creator.first_name} {instance.poll_creator.last_name}'
+        return fullname
+
     def get_poll_has_expired(self, instance):
-        return instance. poll_expiration_date == timezone.now().date() or timezone.now().date() > instance.expire_date
+        return instance.poll_expiration_date == timezone.now().date() or timezone.now().date() > instance.poll_expiration_date
 
     def get_poller_username_id(self, instance):
         return instance.poll_creator.id
 
-    def get_poller_image(self, instance):
+    def get_poll_creator_image(self, instance):
         try:
-            return instance.created_by.profile.image.url
+            return instance.poll_creator.customuser.image.url
         except AttributeError:
             return None
 
@@ -41,8 +55,7 @@ class Poll_Serializer(serializers.ModelSerializer):
         instance.question = validated_data.get('question', instance.question)
         instance.expire_date = validated_data.get(
             'expire_date', instance.expire_date)
-        instance.choice_type = validated_data.get(
-            'choice_type', instance.choice_type)
+
         instance.save()
         poll_choices = validated_data.get('choices', None)
         if poll_choices is not None:
@@ -54,33 +67,27 @@ class Poll_Serializer(serializers.ModelSerializer):
                     if choice.votes.count() > 0:
                         raise serializers.ValidationError(
                             'Poll ongoing unable to edit poll choice ')
-                    choice.choice_text = choices.get(
-                        'choice_text', choice.choice_text)
-                    choice.choice_audio = choices.get(
-                        'choice_audio', choice.choice_audio)
-                    choice.choice_video = choices.get(
-                        'choice_video', choice.choice_video)
                 except Choice.DoesNotExist:
                     pass
 
         return instance
 
-    def to_representation(self, instance):
-        ret = super(PollSerializer, self).to_representation(instance)
-        request = self.context['request']
-        poll_has_been_bookmarked = False
-        poll_has_been_liked = False
-        poll_has_been_shared = False
-        if request.user.is_authenticated:
-            if BookMark.objects.filter(user=request.user, poll=instance).exists():
-                poll_has_been_bookmarked = True
+    # def to_representation(self, instance):
+    #     ret = super(PollSerializer, self).to_representation(instance)
+    #     request = self.context['request']
+    #     poll_has_been_bookmarked = False
+    #     poll_has_been_liked = False
+    #     poll_has_been_shared = False
+    #     if request.user.is_authenticated:
+    #         if BookMark.objects.filter(user=request.user, poll=instance).exists():
+    #             poll_has_been_bookmarked = True
 
-            if Likes.objects.filter(user=request.user, poll=instance).exists():
-                poll_has_been_liked = True
+    #         if Likes.objects.filter(user=request.user, poll=instance).exists():
+    #             poll_has_been_liked = True
 
-            ret['poll_has_been_bookmarked'] = poll_has_been_bookmarked
-            ret['poll_has_been_liked'] = poll_has_been_liked
+    #         ret['poll_has_been_bookmarked'] = poll_has_been_bookmarked
+    #         ret['poll_has_been_liked'] = poll_has_been_liked
 
-        ret['total_likes'] = instance.poll_likes.all().count()
-        ret['vote_count'] = instance.poll_vote.count()
-        return ret
+    #     ret['total_likes'] = instance.poll_likes.all().count()
+    #     ret['vote_count'] = instance.poll_vote.count()
+    #     return ret

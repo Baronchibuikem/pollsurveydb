@@ -49,6 +49,8 @@ urlpatterns = [
     # This will take you to the admin interface
     # path('admin/', admin.site.urls),
     path('api/v1/account/', include('account.urls')),
+    path('api/v1/polls/', include('polls.urls')),
+    path('api-auth/', include('rest_framework.urls')),
     # This will show you all the available endpoint in this project
     path('doc/', schema_view),
     path('swagger(<format>\.json|\.yaml)',

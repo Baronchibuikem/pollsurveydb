@@ -23,7 +23,7 @@ class Choice(models.Model):
         "Poll", on_delete=models.CASCADE, related_name='choices',)
 
     def __str__(self):
-        return str(self.poll_name.poll_question)
+        return f"<-- {self.choice_name} -->  is the {self.id} choice of <-- {self.poll_name.poll_question} -->"
 
 
 class Vote(models.Model):
@@ -38,4 +38,4 @@ class Vote(models.Model):
         unique_together = ("poll_name", "voted_by")
 
     def __str__(self):
-        return str(self.choice)
+        return str(self.choice_name)
