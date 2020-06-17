@@ -18,7 +18,7 @@ class Poll(models.Model):
 
 
 class Choice(models.Model):
-    choice_name = models.CharField(max_length=30)
+    choice_name = models.CharField(max_length=250)
     poll_name = models.ForeignKey(
         "Poll", on_delete=models.CASCADE, related_name='choices',)
 

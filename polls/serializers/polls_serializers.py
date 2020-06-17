@@ -47,7 +47,7 @@ class PollSerializer(serializers.ModelSerializer):
 
         if choices is not None:
             for choice in choices:
-                Choice.objects.create(poll=poll, **choice)
+                Choice.objects.create(poll_name=poll, **choice)
 
         return poll
 

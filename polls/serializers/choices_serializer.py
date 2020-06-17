@@ -12,7 +12,7 @@ class ChoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Choice
-        fields = ['id', 'poll_name', 'votes', ]
+        fields = ['id', 'poll_name', 'votes', "choice_name"]
 
     def get_poll_name(self, instance):
         return f"{instance.poll_name.poll_question}"
