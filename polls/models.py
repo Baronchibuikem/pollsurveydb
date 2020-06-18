@@ -7,11 +7,11 @@ class Poll(models.Model):
     poll_creator = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="poll_creator")
     poll_expiration_date = models.DateField()
-    poll_created = models.DateField(auto_now=True)
+    poll_created = models.DateTimeField(auto_now=True)
     poll_has_expired = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ('-poll_created',)
+        ordering = ('-poll_question',)
 
     def __str__(self):
         return self.poll_question
