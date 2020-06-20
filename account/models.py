@@ -1,23 +1,28 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser,Group
+from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.contrib.auth.hashers import make_password
 
 
 class CustomUser(AbstractUser):
     Gender = (
-        ('Male','Male'),
+        ('Male', 'Male'),
         ('Female', 'Female')
     )
-    username = models.CharField(null=True, blank=True, max_length=50, unique=True)
+    username = models.CharField(
+        null=True, blank=True, max_length=50, unique=True)
     email = models.EmailField(unique=True)
-    gender = models.CharField(max_length=6, choices=Gender)
+    gender = models.CharField(
+        max_length=6, choices=Gender, null=True, blank=True, default=None)
     position = models.CharField(max_length=40, null=True, blank=True)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE, blank=True, null=True)
+    group = models.ForeignKey(
+        Group, on_delete=models.CASCADE, blank=True, null=True)
     bio = models.CharField(max_length=250, null=True, blank=True)
+    image = models.ImageField("media/user_image", null=True, blank=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'username', 'gender', 'position', 'bio']
+    REQUIRED_FIELDS = ['first_name', 'last_name',
+                       'username', 'gender', 'position', 'bio']
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
