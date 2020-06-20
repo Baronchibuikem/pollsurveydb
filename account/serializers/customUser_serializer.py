@@ -9,10 +9,15 @@ class GetUserSerializer(serializers.ModelSerializer):
     """
     Used to convert python objects stored in the database to json objects
     """
+    user_fullname = serializers.SerializerMethodField()
+
     class Meta:
         model = CustomUser
-        fields = ("id", "first_name", "last_name", "username",
+        fields = ("id", "user_fullname", "username",
                   "gender", "email", "position", "bio")
+
+    def get_user_fullname(self, instance):
+        return f"{self.instance.first_name} {self.instance.last_name}"
 
 
 class RegistrationSerializer(serializers.Serializer):

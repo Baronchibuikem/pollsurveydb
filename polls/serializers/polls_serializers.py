@@ -16,7 +16,7 @@ class PollSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Poll
-        fields = ("poll_question", "id", "poll_creator", 'poll_creator_image',
+        fields = ("poll_question", "id", "poll_creator", 'poll_creator_image', "poll_creator_id",
                   "poll_expiration_date", "poll_has_expired",
                   "poll_creator_fullname", "choices")
         read_only_fields = ["expired", 'poll_has_expired']
@@ -32,8 +32,8 @@ class PollSerializer(serializers.ModelSerializer):
     def get_poll_has_expired(self, instance):
         return instance.poll_expiration_date == timezone.now().date() or timezone.now().date() > instance.poll_expiration_date
 
-    def get_poller_username_id(self, instance):
-        return instance.poll_creator.id
+    def get_poll_creator_id(self, instance):
+        return instance.poll_creator.customuser.id
 
     def get_poll_creator_image(self, instance):
         try:
