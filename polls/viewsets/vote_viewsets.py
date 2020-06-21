@@ -13,7 +13,7 @@ class CreateVote(generics.CreateAPIView):
     queryset = Vote
 
     def create(self, request, pk, choice_pk):
-        data = {'choice': choice_pk, 'poll': pk}
+        data = {'choice_id': choice_pk, 'poll_id': pk}
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 

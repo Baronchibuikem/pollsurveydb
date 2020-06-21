@@ -27,15 +27,15 @@ class Choice(models.Model):
 
 
 class Vote(models.Model):
-    choice_name = models.ForeignKey(
+    choice_id = models.ForeignKey(
         Choice, related_name='votes', on_delete=models.CASCADE)
-    poll_name = models.ForeignKey(
+    poll_id = models.ForeignKey(
         Poll, on_delete=models.CASCADE, related_name='poll_vote')
     voted_by = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, null=True, related_name='voters')
 
     class Meta:
-        unique_together = ("poll_name", "voted_by")
+        unique_together = ("poll_id", "voted_by")
 
     def __str__(self):
-        return str(self.choice_name)
+        return str(self.choice_id)
