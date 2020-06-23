@@ -1,8 +1,16 @@
 from rest_framework import serializers, status
-from account.models import CustomUser
+from account.models import CustomUser, Follow
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import ValidationError
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    """Follower Serializer"""
+
+    class Meta:
+        model = Follow
+        fields = '__all__'
 
 
 class GetUserSerializer(serializers.ModelSerializer):

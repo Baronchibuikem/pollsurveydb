@@ -11,7 +11,7 @@ class Poll(models.Model):
     poll_has_expired = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ('-poll_question',)
+        ordering = ('-id',)
 
     def __str__(self):
         return self.poll_question
@@ -34,8 +34,8 @@ class Vote(models.Model):
     voted_by = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, null=True, related_name='voters')
 
-    class Meta:
-        unique_together = ("poll_id", "voted_by")
+    # class Meta:
+    #     unique_together = ("poll_id", "voted_by")
 
     def __str__(self):
         return str(self.choice_id)

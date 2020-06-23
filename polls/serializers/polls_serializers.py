@@ -1,5 +1,6 @@
 from rest_framework import serializers, status
 from polls.models import Poll, Choice
+from account.models import BookMark, Likes
 from rest_framework.validators import ValidationError
 from django.utils import timezone
 from polls.serializers.choices_serializer import ChoiceSerializer
@@ -72,22 +73,22 @@ class PollSerializer(serializers.ModelSerializer):
 
         return instance
 
-    # def to_representation(self, instance):
-    #     ret = super(PollSerializer, self).to_representation(instance)
-    #     request = self.context['request']
-    #     poll_has_been_bookmarked = False
-    #     poll_has_been_liked = False
-    #     poll_has_been_shared = False
-    #     if request.user.is_authenticated:
-    #         if BookMark.objects.filter(user=request.user, poll=instance).exists():
-    #             poll_has_been_bookmarked = True
+    def to_representation(self, instance):
+        ret = super(PollSerializer, self).to_representation(instance)
+        request = self.context['request']
+        poll_has_been_bookmarked = False
+        poll_has_been_liked = False
+        poll_has_been_shared = False
+        if request.user.is_authenticated:
+            if BookMark.objects.filter(user=request.user, poll=instance).exists():
+                poll_has_been_bookmarked = True
 
-    #         if Likes.objects.filter(user=request.user, poll=instance).exists():
-    #             poll_has_been_liked = True
+            if Likes.objects.filter(user=request.user, poll=instance).exists():
+                poll_has_been_liked = True
 
-    #         ret['poll_has_been_bookmarked'] = poll_has_been_bookmarked
-    #         ret['poll_has_been_liked'] = poll_has_been_liked
+            ret['poll_has_been_bookmarked'] = poll_has_been_bookmarked
+            ret['poll_has_been_liked'] = poll_has_been_liked
 
-    #     ret['total_likes'] = instance.poll_likes.all().count()
-    #     ret['vote_count'] = instance.poll_vote.count()
-    #     return ret
+        ret['total_likes'] = instance.poll_likes.all().count()
+        ret['vote_count'] = instance.poll_vote.count()
+        return ret

@@ -21,6 +21,8 @@ class CreateVote(generics.CreateAPIView):
             self.perform_create(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
     def perform_create(self, instance):
         instance.save(voted_by=self.request.user)
         return instance
