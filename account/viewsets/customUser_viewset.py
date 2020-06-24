@@ -2,11 +2,14 @@ from django.contrib.auth.models import User
 from rest_framework import status, generics, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from account.models import CustomUser
+from account.models import CustomUser, BookMark, Likes, Follow
+from polls.models import Poll
 from knox.models import AuthToken
 from rest_framework.permissions import AllowAny
 from account.permissions import IsOwnerOrReadonly
 from account.serializers.customUser_serializer import RegistrationSerializer, LoginSerializer, GetUserSerializer
+from collections import OrderedDict
+from django.db.models import F, Count
 
 
 class LoginViewSet(generics.GenericAPIView):
@@ -63,3 +66,22 @@ class UserDetailAPIView(generics.RetrieveUpdateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = GetUserSerializer
     permission_classes = (IsOwnerOrReadonly, )
+
+    def get(self, request, pk, format=None):
+        user_info = OrderedDict()
+        user = self.get_object()
+        serializer = GetUserSerializer(
+            user, context=self.get_serializer_context())
+        poll = Poll.objects.filter(poll_creator=user).values(
+            'poll_question', 'poll_created', 'pk')
+        bookmark = BookMark.objects.filter(user=user).values(
+            'created', 'poll__pk', question=F('poll__poll_question'))
+        like = Likes.objects.filter(user=user).values('like_date', question=F('poll__poll_question'),
+                                                      pk=F('poll__pk'), pub_date=F('poll__poll_created'))
+        user_info['user'] = serializer.data
+        user_info['followers'] = Follow.objects.get_followers(user)
+        user_info['followed'] = Follow.objects.get_followings(user)
+        user_info['polls'] = poll
+        user_info['bookmarks'] = bookmark
+        user_info['likes'] = like
+        return Response(user_info, status=status.HTTP_200_OK)

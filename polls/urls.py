@@ -8,7 +8,7 @@ urlpatterns = [
     path("<int:pk>/choices/", ChoiceList.as_view(), name="choice_list"),
     path("<int:pk>/choices/<int:choice_pk>/vote/",
          CreateVote.as_view(), name="create_vote"),
-    path("choices/", ChoiceList.as_view(), name="choice_list"),
+#     path("choices/", ChoiceList.as_view(), name="choice_list"),
     path("vote/<int:pk>/<int:choice_pk>/",
          CreateVote.as_view(), name="create_vote"),
     path("all-polls/", PollList.as_view(), name="polls_list"),

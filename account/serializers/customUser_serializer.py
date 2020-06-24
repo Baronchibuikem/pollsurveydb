@@ -1,8 +1,16 @@
 from rest_framework import serializers, status
-from account.models import CustomUser
+from account.models import CustomUser, Follow
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import ValidationError
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    """Follower Serializer"""
+
+    class Meta:
+        model = Follow
+        fields = '__all__'
 
 
 class GetUserSerializer(serializers.ModelSerializer):
@@ -10,14 +18,39 @@ class GetUserSerializer(serializers.ModelSerializer):
     Used to convert python objects stored in the database to json objects
     """
     user_fullname = serializers.SerializerMethodField()
+    follow_status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
         fields = ("id", "user_fullname", "username",
-                  "gender", "email", "position", "bio")
+                  "gender", "email", "position", "bio", "follow_status")
 
     def get_user_fullname(self, instance):
         return f"{self.instance.first_name} {self.instance.last_name}"
+
+    def get_follow_status(self, instance):
+        follow_stat = {}
+        request = self.context.get('request',  None)
+        if request is not None:
+            user = request.user
+            if user.is_authenticated:
+                follower_list = Follow.objects.get_followers_list(instance)
+                if instance == user:
+                    return follow_stat
+
+                if user.pk in follower_list:
+                    follow_stat['is_following'] = True
+                else:
+                    follow_stat['is_following'] = False
+
+                following_list = Follow.objects.get_followings_list(instance)
+
+                if user.pk in following_list:
+                    follow_stat['is_followed'] = True
+                else:
+                    follow_stat['is_followed'] = False
+
+        return follow_stat
 
 
 class RegistrationSerializer(serializers.Serializer):

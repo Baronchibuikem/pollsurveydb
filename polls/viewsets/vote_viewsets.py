@@ -13,13 +13,15 @@ class CreateVote(generics.CreateAPIView):
     queryset = Vote
 
     def create(self, request, pk, choice_pk):
-        data = {'choice': choice_pk, 'poll': pk}
+        data = {'choice_id': choice_pk, 'poll_id': pk}
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
 
         if request.user.is_authenticated:
             self.perform_create(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def perform_create(self, instance):
         instance.save(voted_by=self.request.user)

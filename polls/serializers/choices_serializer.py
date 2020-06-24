@@ -26,3 +26,22 @@ class ChoiceSerializer(serializers.ModelSerializer):
                 Vote.objects.create(choice=choice, **votes)
 
         return choice
+
+    def to_representation(self, instance):
+        """
+        Used to return total number of votes in a choice and name of registered voters
+        """
+        from polls.utils import filter_votes
+        # this extends the instances of ChoiceSerializer
+        ret = super(ChoiceSerializer, self).to_representation(instance)
+        try:
+            choice_vote_count = instance.votes.all().count()
+        except AttributeError:
+            return ret
+        else:
+            ret['choice_vote_count'] = choice_vote_count
+
+        ret['registered_voter'] = filter_votes(
+            instance.votes.values('voted_by__username'))
+
+        return ret
