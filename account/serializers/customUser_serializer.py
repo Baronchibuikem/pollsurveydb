@@ -1,5 +1,5 @@
 from rest_framework import serializers, status
-from account.models import CustomUser, Follow
+from account.models import CustomUser, Follow, BookMark, Follow, Likes
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import ValidationError
@@ -124,3 +124,25 @@ class LoginSerializer(serializers.Serializer):
 #     class Meta:
 #         model = CustomUser
 #         fields = ('old_password', 'new_password')
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    poll_question_text = serializers.SerializerMethodField()
+
+    def get_poll_question_text(self, instance):
+        return str(instance.poll)
+
+    class Meta:
+        model = BookMark
+        fields = ('id', 'poll', 'user', 'created', 'poll_question_text')
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    poll_question_text = serializers.SerializerMethodField()
+
+    def get_poll_question_text(self, instance):
+        return str(instance.poll)
+
+    class Meta:
+        model = Likes
+        fields = ('id', 'poll', 'user', 'like_date',  'poll_question_text')
