@@ -3,6 +3,7 @@ from account.models import CustomUser, Follow, BookMark, Follow, Likes
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import ValidationError
+from polls.serializers.polls_serializers import PollSerializer
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -17,13 +18,14 @@ class GetUserSerializer(serializers.ModelSerializer):
     """
     Used to convert python objects stored in the database to json objects
     """
+    polls = PollSerializer(many=True, required=False)
     user_fullname = serializers.SerializerMethodField()
     follow_status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
         fields = ("id", "user_fullname", "username",
-                  "gender", "email", "position", "bio", "follow_status")
+                  "gender", "email", "position", "bio", "follow_status", "polls")
 
     def get_user_fullname(self, instance):
         return f"{self.instance.first_name} {self.instance.last_name}"
@@ -94,7 +96,7 @@ class RegistrationSerializer(serializers.Serializer):
 
 class LoginSerializer(serializers.Serializer):
     """
-    Used to convert login data enter by a user from json objects to python objects 
+    Used to convert login data enter by a user from json objects to python objects
     before saving them in the database
     """
     email = serializers.EmailField()
@@ -140,9 +142,9 @@ class BookmarkSerializer(serializers.ModelSerializer):
 class LikeSerializer(serializers.ModelSerializer):
     poll_question_text = serializers.SerializerMethodField()
 
-    def get_poll_question_text(self, instance):
-        return str(instance.poll)
-
     class Meta:
         model = Likes
         fields = ('id', 'poll', 'user', 'like_date',  'poll_question_text')
+
+    def get_poll_question_text(self, instance):
+        return str(instance.poll.poll_question)

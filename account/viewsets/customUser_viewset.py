@@ -21,7 +21,8 @@ class LoginViewSet(generics.GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.validated_data
             return Response({
-                "user": GetUserSerializer(user, context=self.get_serializer_context()).data,
+                # "user": GetUserSerializer(user, context=self.get_serializer_context()).data,
+                'user': user.pk,
                 "token": AuthToken.objects.create(user)[1],
                 "status": status.HTTP_200_OK,
                 "message": "Login successfully"
@@ -78,7 +79,14 @@ class UserDetailAPIView(generics.RetrieveUpdateAPIView):
         bookmark = BookMark.objects.filter(user=user).values(
             'created', 'poll__pk', question=F('poll__poll_question'))
         like = Likes.objects.filter(user=user).values('like_date', question=F('poll__poll_question'),
-                                                      pk=F('poll__pk'), pub_date=F('poll__poll_created'))
+                                                      pk=F('poll__pk'), pub_date=F('poll__poll_created'),
+                                                      poll_creator_username=F(
+                                                          "poll__poll_creator__username"),
+                                                      poll_creator_firstname=F(
+                                                          'poll__poll_creator__first_name'),
+                                                      poll_creator_lastname=F(
+                                                          'poll__poll_creator__last_name'),
+                                                      poll_creator_bio=F('poll__poll_creator__bio'))
         user_info['user'] = serializer.data
         user_info['followers'] = Follow.objects.get_followers(user)
         user_info['followed'] = Follow.objects.get_followings(user)
