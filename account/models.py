@@ -17,14 +17,14 @@ class CustomUser(AbstractUser):
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, blank=True, null=True)
     bio = models.CharField(max_length=250, null=True, blank=True)
-    image = models.ImageField("media/user_image", null=True, blank=True)
+    image = models.ImageField(upload_to="user_image", null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['first_name', 'last_name',
                        'username', 'gender', 'position', 'bio']
 
     def __str__(self):
-        return f'{self.username}'
+        return f'{self.first_name} {self.last_name} with username {self.username}'
 
 
 # class Follower(models.Model):

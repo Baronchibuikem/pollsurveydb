@@ -1,8 +1,8 @@
 from django.urls import path, include
-from account.viewsets.customUser_viewset import (LoginViewSet, RegisterViewSet, UserListAPIView,
-                                                 UserDetailAPIView, LikesAPIView, BookMarkAPIView,
-                                                 DeleteBookMarkedAPIView, DeleteLikesAPIView, ListFollowingAPIView,
-                                                 FollowUserAPIView, ListFollowersAPIView, UnfollowAPIView)
+from account.views import (LoginViewSet, RegisterViewSet, UserListAPIView,
+                           UserDetailAPIView, LikesAPIView, BookMarkAPIView,
+                           DeleteBookMarkedAPIView, DeleteLikesAPIView, ListFollowingAPIView,
+                           FollowUserAPIView, ListFollowersAPIView, UnfollowAPIView)
 from knox import views as knox_views
 from rest_framework import routers
 
