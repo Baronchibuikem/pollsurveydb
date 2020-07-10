@@ -24,7 +24,7 @@ class CustomUser(AbstractUser):
                        'username', 'gender', 'position', 'bio']
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} with username {self.username}'
+        return f'{self.username}'
 
 
 # class Follower(models.Model):
