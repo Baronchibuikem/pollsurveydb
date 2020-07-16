@@ -26,16 +26,16 @@ from drf_yasg import openapi
 # ==================================
 # DJANGO ADMIN custom
 # ==================================
-admin.site.site_header = "YouChoose"
-admin.site.site_title = "YouChoose Staff Portal"
-admin.site.index_title = "Welcome to YouChoose Staff Portal"
+admin.site.site_header = "SurveyPoll"
+admin.site.site_title = "SurveyPoll Staff Portal"
+admin.site.index_title = "Welcome to SurveyPoll Staff Portal"
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="YouChoose API",
+        title="SurveyPoll API",
         default_version='v1',
         description="A poll web application that allows users vote on a poll",
-        terms_of_service="https://www.google.com/policies/terms/",
+        # terms_of_service="https://www.google.com/policies/terms/",
         #   contact=openapi.Contact(email="contact@snippets.local"),
         license=openapi.License(name="BSD License"),
     ),

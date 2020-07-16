@@ -159,6 +159,7 @@ class ListFollowingAPIView(ListFollowersAPIView):
 
 
 class UnfollowAPIView(generics.DestroyAPIView):
+    # This is used to delete a user from a logged in users followers list.
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Follow
     serializer_class = FollowSerializer

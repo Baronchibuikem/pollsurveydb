@@ -19,16 +19,19 @@ class GetUserSerializer(serializers.ModelSerializer):
     Used to convert python objects stored in the database to json objects
     """
     polls = PollSerializer(many=True, required=False)
-    user_fullname = serializers.SerializerMethodField()
+    # user_fullname = serializers.SerializerMethodField()
     follow_status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ("id", "user_fullname", "username", "image",
+        fields = ("id", "first_name", "username", "image", "last_name",
                   "gender", "email", "position", "bio", "follow_status", "polls")
 
-    def get_user_fullname(self, instance):
-        return f"{self.instance.first_name} {self.instance.last_name}"
+    # def get_user_fullname(self, instance):
+    #     print("-----------------------")
+    #     print(self.instance.first())
+    #     print("-----------------------")
+    #     return f"{self.instance.first()}"
 
     def get_follow_status(self, instance):
         follow_stat = {}

@@ -24,7 +24,7 @@ urlpatterns = [
     path('follow-user/', FollowUserAPIView.as_view(), name='follow_user'),
     path('followers/', ListFollowersAPIView.as_view(), name='followers'),
     path('followings/', ListFollowingAPIView.as_view(), name='followings'),
-    path('unfollow-user/<str:id>/', UnfollowAPIView.as_view(), name='unfollow')
+    path('unfollow-user/<int:id>/', UnfollowAPIView.as_view(), name='unfollow')
 ]
 
 urlpatterns += router.urls
