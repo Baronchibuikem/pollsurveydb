@@ -12,13 +12,14 @@ class PollSerializer(serializers.ModelSerializer):
     poll_has_expired = serializers.SerializerMethodField()
     poll_creator_image = serializers.SerializerMethodField()
     poll_creator_fullname = serializers.SerializerMethodField()
+    image = serializers.ImageField(source="poll_creator.image", required=False)
 
     # poll_creator_id = serializers.SerializerMethodField()
 
     class Meta:
         model = Poll
         fields = ("poll_question", "id", "poll_creator", 'poll_creator_image', "poll_creator_id",
-                  "poll_expiration_date", "poll_has_expired",
+                  "poll_expiration_date", "poll_has_expired", 'image',
                   "poll_creator_fullname", "choices")
         read_only_fields = ["expired", 'poll_has_expired']
 
@@ -38,8 +39,8 @@ class PollSerializer(serializers.ModelSerializer):
 
     def get_poll_creator_image(self, instance):
         try:
-            return instance.poll_creator.customuser.image.url
-        except AttributeError:
+            return instance.poll_creator.image.url
+        except ValueError:
             return None
 
     def create(self, validated_data):
@@ -54,8 +55,8 @@ class PollSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         instance.question = validated_data.get('question', instance.question)
-        instance.expire_date = validated_data.get(
-            'expire_date', instance.expire_date)
+        # instance.expire_date = validated_data.get(
+        #     'expire_date', instance.expire_date)
 
         instance.save()
         poll_choices = validated_data.get('choices', None)

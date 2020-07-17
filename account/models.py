@@ -17,7 +17,7 @@ class CustomUser(AbstractUser):
     group = models.ForeignKey(
         Group, on_delete=models.CASCADE, blank=True, null=True)
     bio = models.CharField(max_length=250, null=True, blank=True)
-    image = models.ImageField("media/user_image", null=True, blank=True)
+    image = models.ImageField(upload_to="user_image", null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['first_name', 'last_name',
@@ -41,9 +41,15 @@ class FollowQuerySet(models.query.QuerySet):
             follow.append(
 
                 {'id': follower.pk,
-                 'follwer_id': follower.follower.id,
+                 'follower_id': follower.follower.id,
                  'follower_username': follower.follower.username,
-                 'follow_date': follower.date_follow
+                 'follow_date': follower.date_follow,
+                 'follower_user_bio': follower.follower.bio,
+                 'follower_user_fullname': follower.follower.first_name + ' ' + follower.follower.last_name,
+                 #  "follower_user_firstname": follower.follower.first_name,
+                 #  "follower_user_lastname": follower.follower.last_name
+
+                 #  'follower_user_image': follower.follower.image
                  }
             )
         return follow
@@ -57,7 +63,13 @@ class FollowQuerySet(models.query.QuerySet):
                 {'id': following.pk,
                  'following_id': following.following.id,
                  'following_username': following.following.username,
-                 'following_date': following.date_follow}
+                 'following_date': following.date_follow,
+                 'following_user_bio': following.following.bio,
+                 'following_user_fullname': following.following.first_name + " " + following.following.last_name
+                 #  "following_user_firstname": following.following.first_name,
+                 #  "following_user_lastname": following.following.last_name
+                 #  'following_user_image': following.following.image
+                 }
             )
         return follow
 

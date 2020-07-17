@@ -1,8 +1,9 @@
 from rest_framework import serializers, status
-from account.models import CustomUser, Follow
+from account.models import CustomUser, Follow, BookMark, Follow, Likes
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import ValidationError
+from polls.serializers.polls_serializers import PollSerializer
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -17,16 +18,20 @@ class GetUserSerializer(serializers.ModelSerializer):
     """
     Used to convert python objects stored in the database to json objects
     """
-    user_fullname = serializers.SerializerMethodField()
+    polls = PollSerializer(many=True, required=False)
+    # user_fullname = serializers.SerializerMethodField()
     follow_status = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
-        fields = ("id", "user_fullname", "username",
-                  "gender", "email", "position", "bio", "follow_status")
+        fields = ("id", "first_name", "username", "image", "last_name",
+                  "gender", "email", "position", "bio", "follow_status", "polls")
 
-    def get_user_fullname(self, instance):
-        return f"{self.instance.first_name} {self.instance.last_name}"
+    # def get_user_fullname(self, instance):
+    #     print("-----------------------")
+    #     print(self.instance.first())
+    #     print("-----------------------")
+    #     return f"{self.instance.first()}"
 
     def get_follow_status(self, instance):
         follow_stat = {}
@@ -74,7 +79,8 @@ class RegistrationSerializer(serializers.Serializer):
     def create(self, validated_data):
         user = CustomUser(first_name=validated_data["first_name"],
                           last_name=validated_data['last_name'],
-                          email=validated_data["email"])
+                          email=validated_data["email"],
+                          username=validated_data['username'])
         user.set_password(validated_data["password"])
         user.save()
         return user
@@ -94,7 +100,7 @@ class RegistrationSerializer(serializers.Serializer):
 
 class LoginSerializer(serializers.Serializer):
     """
-    Used to convert login data enter by a user from json objects to python objects 
+    Used to convert login data enter by a user from json objects to python objects
     before saving them in the database
     """
     email = serializers.EmailField()
@@ -124,3 +130,25 @@ class LoginSerializer(serializers.Serializer):
 #     class Meta:
 #         model = CustomUser
 #         fields = ('old_password', 'new_password')
+
+
+class BookmarkSerializer(serializers.ModelSerializer):
+    poll_question_text = serializers.SerializerMethodField()
+
+    def get_poll_question_text(self, instance):
+        return str(instance.poll)
+
+    class Meta:
+        model = BookMark
+        fields = ('id', 'poll', 'user', 'created', 'poll_question_text')
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    poll_question_text = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Likes
+        fields = ('id', 'poll', 'user', 'like_date',  'poll_question_text')
+
+    def get_poll_question_text(self, instance):
+        return str(instance.poll.poll_question)

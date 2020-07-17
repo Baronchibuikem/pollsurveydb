@@ -6,7 +6,7 @@ class Poll(models.Model):
     poll_question = models.CharField(max_length=300)
     poll_creator = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="poll_creator")
-    poll_expiration_date = models.DateField()
+    poll_expiration_date = models.DateField(null=True, blank=True)
     poll_created = models.DateTimeField(auto_now=True)
     poll_has_expired = models.BooleanField(default=False)
 
