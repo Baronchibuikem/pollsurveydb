@@ -1,2 +1,2 @@
 release: python manage.py migrate
-web: gunicorn HealthThink.wsgi --log-file -
+web: gunicorn youchooseDjango.wsgi 
