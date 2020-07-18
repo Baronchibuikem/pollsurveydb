@@ -52,7 +52,7 @@ urlpatterns = [
     path('api/v1/polls/', include('polls.urls')),
     path('api-auth/', include('rest_framework.urls')),
     # This will show you all the available endpoint in this project
-    path('doc/', schema_view),
+    # path('doc/', schema_view),
     path('swagger(<format>\.json|\.yaml)',
          schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('', schema_view.with_ui('swagger',
@@ -65,7 +65,3 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
-
-
-urlpatterns += [re_path('.*',
-                        TemplateView.as_view(template_name="index.html")), ]

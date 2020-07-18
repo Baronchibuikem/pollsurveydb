@@ -1,5 +1,4 @@
 staticfiles
-static
 __pycache__
 migrations
 .env
