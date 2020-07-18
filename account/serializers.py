@@ -25,7 +25,7 @@ class GetUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ("id", "first_name", "username", "image", "last_name",
-                  "gender", "email", "position", "bio", "follow_status", "polls")
+                  "email",  "bio", "follow_status", "polls")
 
     # def get_user_fullname(self, instance):
     #     print("-----------------------")
@@ -62,17 +62,11 @@ class RegistrationSerializer(serializers.Serializer):
     """
     For user registration
     """
-    Gender = (
-        ('Male', 'Male'),
-        ('Female', 'Female')
-    )
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     email = serializers.EmailField()
     password = serializers.CharField()
     username = serializers.CharField()
-    gender = serializers.ChoiceField(choices=Gender, required=False)
-    position = serializers.CharField(required=False)
     bio = serializers.CharField(required=False)
 
     # used for registering a user into the database

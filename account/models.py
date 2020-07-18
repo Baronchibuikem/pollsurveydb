@@ -1,30 +1,30 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group
 from django.contrib.auth.hashers import make_password
+from cloudinary.models import CloudinaryField
+from django.db.models.signals import pre_delete
+import cloudinary
+from django.dispatch import receiver
 
 
 class CustomUser(AbstractUser):
-    Gender = (
-        ('Male', 'Male'),
-        ('Female', 'Female')
-    )
     username = models.CharField(
         null=True, blank=True, max_length=50, unique=True)
     email = models.EmailField(unique=True)
-    gender = models.CharField(
-        max_length=6, choices=Gender, null=True, blank=True, default=None)
-    position = models.CharField(max_length=40, null=True, blank=True)
-    group = models.ForeignKey(
-        Group, on_delete=models.CASCADE, blank=True, null=True)
     bio = models.CharField(max_length=250, null=True, blank=True)
-    image = models.ImageField(upload_to="user_image", null=True, blank=True)
+    image = CloudinaryField("user_image", null=True, blank=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['first_name', 'last_name',
-                       'username', 'gender', 'position', 'bio']
+                       'username', 'bio']
 
     def __str__(self):
         return f'{self.username}'
+
+
+@receiver(pre_delete, sender=CustomUser)
+def photo_delete(sender, instance, **kwargs):
+    cloudinary.uploader.destroy(instance.image.public_id)
 
 
 # class Follower(models.Model):
