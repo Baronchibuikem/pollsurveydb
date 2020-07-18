@@ -21,17 +21,18 @@ class GetUserSerializer(serializers.ModelSerializer):
     polls = PollSerializer(many=True, required=False)
     # user_fullname = serializers.SerializerMethodField()
     follow_status = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
         fields = ("id", "first_name", "username", "image", "last_name",
                   "email",  "bio", "follow_status", "polls")
 
-    # def get_user_fullname(self, instance):
-    #     print("-----------------------")
-    #     print(self.instance.first())
-    #     print("-----------------------")
-    #     return f"{self.instance.first()}"
+    def get_image(self, instance):
+        try:
+            return instance.image.url
+        except AttributeError:
+            return None
 
     def get_follow_status(self, instance):
         follow_stat = {}
