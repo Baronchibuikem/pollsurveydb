@@ -21,14 +21,14 @@ class GetUserSerializer(serializers.ModelSerializer):
     polls = PollSerializer(many=True, required=False)
     # user_fullname = serializers.SerializerMethodField()
     follow_status = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = CustomUser
         fields = ("id", "first_name", "username", "image", "last_name",
-                  "email",  "bio", "follow_status", "polls")
+                  "email",  "bio", "follow_status", "polls", "image_url")
 
-    def get_image(self, instance):
+    def get_image_url(self, instance):
         try:
             return instance.image.url
         except AttributeError:
