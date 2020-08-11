@@ -126,7 +126,7 @@ class BookMark(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.poll.question
+        return self.poll.poll_question
 
     class Meta:
         ordering = ('-created',)
