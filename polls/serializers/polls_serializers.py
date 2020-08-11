@@ -54,7 +54,8 @@ class PollSerializer(serializers.ModelSerializer):
         return poll
 
     def update(self, instance, validated_data):
-        instance.question = validated_data.get('question', instance.question)
+        instance.question = validated_data.get(
+            'poll_question', instance.poll_question)
         # instance.expire_date = validated_data.get(
         #     'expire_date', instance.expire_date)
 
