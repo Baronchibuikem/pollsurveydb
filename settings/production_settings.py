@@ -160,8 +160,7 @@ REST_FRAMEWORK = {
 # Whitelisting localhost:3000  because our frontend will be served there
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:3000',
-    'http://localhost:3001',
-    "https://polldecider.herokuapp.com"
+    "http://polldecider.herokuapp.com"
 ]
 
 # user for django-rest-auth-registration
